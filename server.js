@@ -3,7 +3,14 @@ const express = require('express')//initialization of express.js
 const multer = require('multer')//initialization of multer using for multipart/form-data
 const upload = multer()
 const sanitizeHTML = require('sanitize-html')//initialization of sanitize for safety html
+const fse = require('fs-extra')
+const sharp = require('sharp')
 let db
+
+const path = require('path')
+
+//make sure that public/uploaded-photos exists at first launch
+fse.ensureDirSync(path.join('public', 'uploaded-photos'))
 
 //initialization of our app 
 const app = express()
@@ -33,6 +40,11 @@ app.get('/api/Sublets', async (req, res) => {
 })
 
 app.post('/create-sublet', upload.single('photo'), ourCleanup, async(req, res) => {
+    if(req.file) {
+        const photoFileName = `${Date.now()}.jpg`
+        await sharp(req.file.buffer).resize(844, 456).jpeg({quality: 60}).toFile(path.join('public', 'uploaded-photos', photoFileName))
+        req.cleanData.photo = photoFileName
+    }
     console.log(req.body)
     const info = await db.collection('Sublets').insertOne(req.cleanData)
     const newSublet = await db.collection('Sublets').findOne({_id: new ObjectId(info.insertedId)})
