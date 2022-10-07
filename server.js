@@ -40,26 +40,19 @@ app.get('/api/Sublets', async (req, res) => {
 })
 
 app.post('/create-sublet', upload.any('photos'), ourCleanup, async(req, res) => {
-    let photo = req.files
+    let photos = req.files
     req.cleanData.photo = []
-    for (el of photo) {
-        console.log(el)
+    for (el of photos) {
         if(el) {
-
             const photoFileName = `${Date.now()}.jpg`
             await sharp(el.buffer).resize(844, 456).jpeg({quality: 60}).toFile(path.join('public', 'uploaded-photos', photoFileName))
             req.cleanData.photo.push(photoFileName) 
-            
-        }
-
-        
+        } 
     }
     
-    console.log(req.cleanData)
     const info = await db.collection('Sublets').insertOne(req.cleanData)
     const newSublet = await db.collection('Sublets').findOne({_id: new ObjectId(info.insertedId)})
     res.send(newSublet)
- 
 }) 
 
 function ourCleanup(req, res, next) {

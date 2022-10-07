@@ -20,6 +20,8 @@ function App() {
             <CreateNewForm setSublets={setSublets} />
             <div className='sublet-grid'>
                 {sublets.map(function(sublet) {
+                    console.log(sublet)
+
                     return <SubletCard key={sublet._id} city={sublet.city} rooms={sublet.rooms} 
                     photo={sublet.photo} id={sublet._id} setSublets={setSublets} />
                 })}
