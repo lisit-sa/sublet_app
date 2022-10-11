@@ -24,7 +24,6 @@ app.use(express.urlencoded({extended: false}))
 //getting al the sublets & displaying them at the main page 
 app.get('/', async (req, res) => {
     const allSublets = await db.collection('Sublets').find().toArray()
-    console.log(allSublets)
     res.render('home', {allSublets})
 })
 
@@ -54,6 +53,47 @@ app.post('/create-sublet', upload.any('photos'), ourCleanup, async(req, res) => 
     const newSublet = await db.collection('Sublets').findOne({_id: new ObjectId(info.insertedId)})
     res.send(newSublet)
 }) 
+
+app.delete('/sublet/:id', async (req, res) => {
+    if(typeof req.params.id != 'string') req.params.id = ''
+    const doc = await db.collection('Sublets').findOne({_id: new ObjectId(req.params.id)})
+    if (doc.photo) {
+        doc.photo.forEach(element => {
+            fse.remove(path.join('public', 'uploaded-photos', element))
+        });
+    }
+    db.collection('Sublets').deleteOne({_id: new ObjectId(req.params.id)})
+    res.send('Good job')
+})
+
+app.post('/update-sublet', upload.any('photos'), ourCleanup, async(req, res) => {
+    if (req.files) {
+        //if customer upload a new photo
+        let photos = req.files
+        req.cleanData.photo = []
+        let photoFileNameArr =[];
+        for (el of photos) {
+            if(el) {
+                photoFileName = `${Date.now()}.jpg`
+                photoFileNameArr.push(photoFileName)
+                await sharp(el.buffer).resize(844, 456).jpeg({quality: 60}).toFile(path.join('public', 'uploaded-photos', photoFileName))
+                req.cleanData.photo.push(photoFileName) 
+            } 
+        }
+        const info = await db.collection("Sublets").findOneAndUpdate({ _id: new ObjectId(req.body._id) }, { $set: req.cleanData })
+        if (info.value.photo) {  
+            info.value.photo.forEach(element => {
+                fse.remove(path.join('public', 'uploaded-photos', element))
+            });
+        }
+
+        res.send(photoFileNameArr)
+    } else {
+        // if they are not uploading a new photo
+        db.collection("Sublets").findOneAndUpdate({ _id: new ObjectId(req.body._id) }, { $set: req.cleanData })
+        res.send(false)
+    }
+})
 
 function ourCleanup(req, res, next) {
     if (typeof req.body.city != 'string') req.body.city  =''

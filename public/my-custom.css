@@ -1,3 +1,7 @@
 .sublet-grid {
     display: flex;
 }
+
+.card {
+    width: 30%;
+}

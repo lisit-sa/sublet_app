@@ -59,7 +59,7 @@ function SubletCard(props) {
             {isEditing && (
             <div className="our-custom-input">
                 <div className="our-custom-input-interior">
-                <input onChange={handleImageUpload} className="form-control form-control-sm" type="file" />
+                <input onChange={handleImageUpload} name="file" className="form-control form-control-sm" type="file" multiple/>
                 </div>
             </div>
             )}
