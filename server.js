@@ -58,8 +58,8 @@ app.delete('/sublet/:id', async (req, res) => {
     if(typeof req.params.id != 'string') req.params.id = ''
     const doc = await db.collection('Sublets').findOne({_id: new ObjectId(req.params.id)})
     if (doc.photo) {
-        doc.photo.forEach(element => {
-            fse.remove(path.join('public', 'uploaded-photos', element))
+        doc.photo.forEach(el => {
+            fse.remove(path.join('public', 'uploaded-photos', el))
         });
     }
     db.collection('Sublets').deleteOne({_id: new ObjectId(req.params.id)})
@@ -82,8 +82,8 @@ app.post('/update-sublet', upload.any('photos'), ourCleanup, async(req, res) => 
         }
         const info = await db.collection("Sublets").findOneAndUpdate({ _id: new ObjectId(req.body._id) }, { $set: req.cleanData })
         if (info.value.photo) {  
-            info.value.photo.forEach(element => {
-                fse.remove(path.join('public', 'uploaded-photos', element))
+            info.value.photo.forEach(el => {
+                fse.remove(path.join('public', 'uploaded-photos', el))
             });
         }
 
