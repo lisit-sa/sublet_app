@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 import Axios from 'axios';
-import CreateNewForm from './components/CreateNewForm';
-import SubletCard from './components/SubletCard';
+import CreateNewForm from './components/CreateNewForm/CreateNewForm';
+import SubletCard from './components/SubletCard/SubletCard';
 
 function App() {
     const [sublets, setSublets] = useState([])

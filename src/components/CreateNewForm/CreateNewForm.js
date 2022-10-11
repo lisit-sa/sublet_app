@@ -1,5 +1,6 @@
 import Axios from "axios"
 import React, { useState, useRef } from "react"
+import "./CreateNewForm.css";
 
 function CreateNewForm(props) {
     const [city, setCity] = useState("")

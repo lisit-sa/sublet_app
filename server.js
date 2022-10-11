@@ -8,6 +8,9 @@ const sharp = require('sharp')
 let db
 
 const path = require('path')
+const React = require('react')
+const ReactDOMServer = require('react-dom/server')
+const SubletCard = require("./src/components/SubletCard/SubletCard").default
 
 //make sure that public/uploaded-photos exists at first launch
 fse.ensureDirSync(path.join('public', 'uploaded-photos'))
@@ -24,7 +27,18 @@ app.use(express.urlencoded({extended: false}))
 //getting al the sublets & displaying them at the main page 
 app.get('/', async (req, res) => {
     const allSublets = await db.collection('Sublets').find().toArray()
-    res.render('home', {allSublets})
+    const generatedHTML = ReactDOMServer.renderToString(
+        <div className='container'>
+            {!allSublets.length && <p>There are no animals yet, the admin needs to add a few.</p>}
+            <div className='sublet-grid'>
+                {allSublets.map(sublet => <SubletCard key={sublet._id} city={sublet.sity}
+                rooms={sublet.rooms} photo={sublet.photo} id={sublet._id} readOnly={true} />)}
+            </div>
+            <p><a href='/admin'>To the admin page</a></p>
+        </div>
+    )
+
+    res.render('home', {generatedHTML})
 })
 
 //rendering of admin page
@@ -48,7 +62,6 @@ app.post('/create-sublet', upload.any('photos'), ourCleanup, async(req, res) => 
             req.cleanData.photo.push(photoFileName) 
         } 
     }
-    
     const info = await db.collection('Sublets').insertOne(req.cleanData)
     const newSublet = await db.collection('Sublets').findOne({_id: new ObjectId(info.insertedId)})
     res.send(newSublet)

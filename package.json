@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "run-p ourserver ourwebpack",
     "ourwebpack": "webpack --watch",
-    "ourserver": "nodemon server",
+    "ourserver": "nodemon server-compiled",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
@@ -29,8 +29,12 @@
     "react-dom": "^18.2.0",
     "sanitize-html": "^2.7.2",
     "sharp": "^0.31.1",
+    "style-loader": "^3.3.1",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",
     "webpack-node-externals": "^3.0.0"
+  },
+  "devDependencies": {
+    "css-loader": "^6.7.1"
   }
 }

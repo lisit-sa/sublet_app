@@ -63,9 +63,13 @@ function SubletCard(props) {
                 </div>
             </div>
             )}
-            {props.photo.map((photo,index) => (<img key={index} src={photo ? `/uploaded-photos/${photo}` : "img/fallback.png"} 
-            className="card-img-top" alt={`${props.rooms} named ${props.city}`} />))}
-            </div>
+
+
+            {props.photo.map((photo,index) =>
+                isEditing ? (<div key={index + 1}><span >x</span><img key={index} src={photo ? `/uploaded-photos/${photo}` : "img/fallback.png"} 
+                className="card-img-top" alt={`${props.rooms} named ${props.city}`} /></div>) : (<img key={index} src={photo ? `/uploaded-photos/${photo}` : "img/fallback.png"} 
+                className="card-img-top" alt={`${props.rooms} named ${props.city}`} />))}
+        </div>
         <div className="card-body">
             {!isEditing && (
             <>
