@@ -12,7 +12,7 @@ export const register = async(req, res) => {
             return res.status(400).json(errors.array());
         }
     
-        //password encryption
+        //password encryption 
         const password = req.body.password;
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
